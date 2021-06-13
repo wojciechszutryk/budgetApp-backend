@@ -4,13 +4,21 @@ const checkAuth = require('../middleware/check-auth')
 
 const TransactionsController = require('../controllers/transactions');
 
-router.get('/', checkAuth, TransactionsController.transactions_get_all);
+// router.get('/', checkAuth, TransactionsController.transactions_get_all);
+//
+// router.post('/', checkAuth, TransactionsController.transactions_create);
+//
+// router.get(`/:id`, checkAuth, TransactionsController.transactions_get_single);
+//
+// router.delete(`/:id`, checkAuth, TransactionsController.transactions_delete);
 
-router.post('/', checkAuth, TransactionsController.transactions_create);
+router.get('/',  TransactionsController.transactions_get_all);
 
-router.get(`/:id`, checkAuth, TransactionsController.transactions_get_single);
+router.post('/',  TransactionsController.transactions_create);
 
-router.delete(`/:id`, checkAuth, TransactionsController.transactions_delete);
+router.get(`/:id`, TransactionsController.transactions_get_single);
+
+router.delete(`/:id`,  TransactionsController.transactions_delete);
 
 
 module.exports = router;

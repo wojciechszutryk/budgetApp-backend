@@ -6,19 +6,17 @@ exports.parentCategories_get_all = (req, res, next) => {
         .select('name _id')
         .exec()
         .then(docs => {
-            res.status(200).json({
-                count: docs.length,
-                parentCategories: docs.map(doc => {
-                    return{
-                        _id: doc._id,
-                        name: doc.name,
-                        request:{
-                            type: 'GET',
-                            url: process.env.SERVER_URL+'parentCategories/'+doc._id
-                        }
+            const parentCategories = docs.map(doc => {
+                return{
+                    id: doc._id,
+                    name: doc.name,
+                    request:{
+                        type: 'GET',
+                        url: process.env.SERVER_URL+'parentCategories/'+doc._id
                     }
-                }),
-            });
+                }
+            })
+            res.status(200).json(parentCategories);
         })
         .catch(err => {
             console.log(err);
@@ -39,7 +37,7 @@ exports.parentCategories_create = (req, res, next) => {
             message: 'Created parentCategory successfully',
             createdParentCategory: {
                 name: result.name,
-                _id: result._id,
+                id: result._id,
                 request: {
                     type: 'GET',
                     url: process.env.SERVER_URL+'parentCategories/'+ result._id,
@@ -65,7 +63,8 @@ exports.parentCategories_get_single = (req, res, next) => {
                 })
             }
             res.status(200).json({
-                parentCategory: parentCategory,
+                name: parentCategory.name,
+                id: parentCategory._id,
                 request:{
                     type: 'GET',
                     url: process.env.SERVER_URL+'parentCategories/'

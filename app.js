@@ -36,9 +36,9 @@ app.use((req, res,next)=>{
 app.use('/users', usersRoutes);
 app.use('/parentCategories', parentCategoriesRoutes);
 app.use('/categories', categoriesRoutes);
-app.use('/budgets', budgetsRoutes);
 app.use('/budgetCategories', budgetCategoriesRoutes);
 app.use('/transactions', transactionsRoutes);
+app.use('/budgets', budgetsRoutes);
 
 app.use((req, res,next) => {
     const error =new Error('not found');

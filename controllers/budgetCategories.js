@@ -6,21 +6,19 @@ exports.budgetCategories_get_all = (req, res, next) => {
         .select('categoryId budget budgetId _id')
         .exec()
         .then(docs => {
-            res.status(200).json({
-                count: docs.length,
-                BudgetCategories: docs.map(doc => {
-                    return{
-                        _id: doc._id,
-                        budgetId: doc.budgetId,
-                        budget: doc.budget,
-                        categoryId: doc.categoryId,
-                        request:{
-                            type: 'GET',
-                            url: process.env.SERVER_URL+'budgetCategories/'+doc._id
-                        }
+            const budgetCategories = docs.map(doc => {
+                return{
+                    id: doc._id,
+                    budgetId: doc.budgetId,
+                    budget: doc.budget,
+                    categoryId: doc.categoryId,
+                    request:{
+                        type: 'GET',
+                        url: process.env.SERVER_URL+'budgetCategories/'+doc._id
                     }
-                }),
-            });
+                }
+            })
+            res.status(200).json(budgetCategories);
         })
         .catch(err => {
             console.log(err);
@@ -45,7 +43,7 @@ exports.budgetCategories_create = (req, res, next) => {
                 budget: result.budget,
                 categoryId: result.categoryId,
                 budgetId: result.budgetId,
-                _id: result._id,
+                id: result._id,
                 request: {
                     type: 'GET',
                     url: process.env.SERVER_URL+'budgetCategories/'+ result._id,
@@ -71,7 +69,10 @@ exports.budgetCategories_get_single = (req, res, next) => {
                 })
             }
             res.status(200).json({
-                budgetCategory: budgetCategory,
+                budget: budgetCategory.budget,
+                categoryId: budgetCategory.categoryId,
+                budgetId: budgetCategory.budgetId,
+                id: budgetCategory._id,
                 request:{
                     type: 'GET',
                     url: process.env.SERVER_URL+'budgetCategories/'

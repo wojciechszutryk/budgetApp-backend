@@ -6,23 +6,21 @@ exports.transactions_get_all = (req, res, next) => {
         .select('categoryId amount date description budgetId _id')
         .exec()
         .then(docs => {
-            res.status(200).json({
-                count: docs.length,
-                Transactions: docs.map(doc => {
-                    return{
-                        _id: doc._id,
-                        budgetId: doc.budgetId,
-                        amount: doc.amount,
-                        categoryId: doc.categoryId,
-                        description: doc.description,
-                        date: doc.date,
-                        request:{
-                            type: 'GET',
-                            url: process.env.SERVER_URL+'transactions/'+doc._id
-                        }
+            const transactions = docs.map(doc => {
+                return{
+                    id: doc._id,
+                    budgetId: doc.budgetId,
+                    amount: doc.amount,
+                    categoryId: doc.categoryId,
+                    description: doc.description,
+                    date: doc.date,
+                    request:{
+                        type: 'GET',
+                        url: process.env.SERVER_URL+'transactions/'+doc._id
                     }
-                }),
-            });
+                }
+            })
+            res.status(200).json(transactions);
         })
         .catch(err => {
             console.log(err);
@@ -51,7 +49,7 @@ exports.transactions_create = (req, res, next) => {
                 budgetId: result.budgetId,
                 description: result.description,
                 date: result.date,
-                _id: result._id,
+                id: result._id,
                 request: {
                     type: 'GET',
                     url: process.env.SERVER_URL+'transactions/'+ result._id,
@@ -77,7 +75,12 @@ exports.transactions_get_single = (req, res, next) => {
                 })
             }
             res.status(200).json({
-                transaction: transaction,
+                amount: transaction.amount,
+                categoryId: transaction.categoryId,
+                budgetId: transaction.budgetId,
+                description: transaction.description,
+                date: transaction.date,
+                id: transaction._id,
                 request:{
                     type: 'GET',
                     url: process.env.SERVER_URL+'transactions/'

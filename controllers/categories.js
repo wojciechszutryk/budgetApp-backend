@@ -8,20 +8,18 @@ exports.categories_get_all = (req, res, next) => {
         .populate('parentCategories')
         .exec()
         .then(docs => {
-            res.status(200).json({
-                count: docs.length,
-                categories: docs.map(doc => {
-                    return{
-                        _id: doc._id,
-                        parentCategory: doc.parentCategory,
-                        name: doc.name,
-                        request:{
-                            type: 'GET',
-                            url: process.env.SERVER_URL+'categories/'+doc._id
-                        }
+            const categories = docs.map(doc => {
+                return{
+                    id: doc._id,
+                    parentCategoryId: doc.parentCategory,
+                    name: doc.name,
+                    request:{
+                        type: 'GET',
+                        url: process.env.SERVER_URL+'categories/'+doc._id
                     }
-                }),
-            });
+                }
+            })
+            res.status(200).json(categories);
         })
         .catch(err => {
             console.log(err);
@@ -50,7 +48,7 @@ exports.categories_create = (req, res, next) => {
         res.status(201).json({
             message: 'Category stored',
             createdCategory: {
-                _id: result._id,
+                id: result._id,
                 parentCategoryId: result.parentCategory,
                 name: result.name,
                 request:{
@@ -80,7 +78,9 @@ exports.categories_get_single = (req, res, next) => {
                 })
             }
             res.status(200).json({
-                category: category,
+                id: category._id,
+                parentCategoryId: category.parentCategory,
+                name: category.name,
                 request:{
                     type: 'GET',
                     url: process.env.SERVER_URL+'categories/'
