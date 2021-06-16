@@ -3,6 +3,7 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 
 const usersRoutes = require('./routes/users')
@@ -12,12 +13,16 @@ const budgetsRoutes = require('./routes/budgets')
 const budgetCategoriesRoutes = require('./routes/budgetCategories')
 const transactionsRoutes = require('./routes/transactions')
 
+
 mongoose.connect('mongodb+srv://admin:'+process.env.MONGODB_PW+'@cluster0.ooyuy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
 mongoose.Promise = global.Promise;
 
+app.use(cors({
+    origin: "*"
+}))
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({extended: false}));

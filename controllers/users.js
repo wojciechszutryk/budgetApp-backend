@@ -21,6 +21,7 @@ exports.users_signup = (req, res) => {
                         const user = new User({
                             _id: new mongoose.Types.ObjectId(),
                             email: req.body.email,
+                            userName: req.body.userName,
                             password: hash,
                             userImage: req.file.path,
                         });
@@ -29,6 +30,9 @@ exports.users_signup = (req, res) => {
                             .then(result =>{
                                 console.log(result)
                                 res.status(201).json({
+                                    email: result.email,
+                                    id: result._id,
+                                    userName: result.userName,
                                     message: 'User created'
                                 })
                             })
@@ -50,7 +54,7 @@ exports.users_login = (req, res) => {
         .then(user => {
             if (user.length < 1){
                 return res.status(401).json({
-                    message: 'Auth failed user:'+user
+                    message: 'Auth failed'
                 })
             }
             bcrypt.compare(req.body.password, user[0].password, (err, result)=>{
@@ -70,6 +74,9 @@ exports.users_login = (req, res) => {
                         }
                     );
                     return res.status(200).json({
+                        id: user[0]._id,
+                        userName: user[0].userName,
+                        userImage: user[0].userImage,
                         message: 'Auth successful',
                         token: token,
                     })

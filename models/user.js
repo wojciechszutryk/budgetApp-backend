@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema({
         unique: true,
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     },
+    userName: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     password: {type: String, required: true},
     userImage: {type: String, required: true}
 });
