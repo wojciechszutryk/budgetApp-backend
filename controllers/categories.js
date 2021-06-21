@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 exports.categories_get_all = (req, res, next) => {
     Category.find()
-        .select('parentCategory name _id')
+        .select('parentCategory name _id userId')
         .populate('parentCategories')
         .exec()
         .then(docs => {
@@ -13,6 +13,7 @@ exports.categories_get_all = (req, res, next) => {
                     id: doc._id,
                     parentCategoryId: doc.parentCategory,
                     name: doc.name,
+                    userId: doc.userId,
                     request:{
                         type: 'GET',
                         url: process.env.SERVER_URL+'categories/'+doc._id
@@ -41,16 +42,17 @@ exports.categories_create = (req, res, next) => {
                 _id: mongoose.Types.ObjectId(),
                 name: req.body.name,
                 parentCategory: req.body.parentCategoryId,
+                userId: req.body.userId,
             });
             return category.save()
         }).then(result => {
-        console.log(result)
         res.status(201).json({
             message: 'Category stored',
             createdCategory: {
                 id: result._id,
                 parentCategoryId: result.parentCategory,
                 name: result.name,
+                userId: result.userId,
                 request:{
                     type: 'GET',
                     url: process.env.SERVER_URL+'categories/'+result._id
@@ -68,7 +70,7 @@ exports.categories_create = (req, res, next) => {
 
 exports.categories_get_single = (req, res, next) => {
     Category.findById(req.params.id)
-        .select('parentCategory name _id')
+        .select('parentCategory name _id userId')
         .populate('parentCategories')
         .exec()
         .then(category => {
@@ -81,6 +83,7 @@ exports.categories_get_single = (req, res, next) => {
                 id: category._id,
                 parentCategoryId: category.parentCategory,
                 name: category.name,
+                userId: category.userId,
                 request:{
                     type: 'GET',
                     url: process.env.SERVER_URL+'categories/'
@@ -106,6 +109,7 @@ exports.categories_delete = (req, res, next) => {
                     url: process.env.SERVER_URL+'categories',
                     body: {
                         parentCategoryId : 'ID',
+                        userId : 'ID',
                         name: 'String'
                     }
                 }

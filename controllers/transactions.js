@@ -3,13 +3,14 @@ const mongoose = require('mongoose');
 
 exports.transactions_get_all = (req, res, next) => {
     Transaction.find()
-        .select('categoryId amount date description budgetId _id')
+        .select('categoryId amount date description budgetId _id userId')
         .exec()
         .then(docs => {
             const transactions = docs.map(doc => {
                 return{
                     id: doc._id,
                     budgetId: doc.budgetId,
+                    userId: doc.userId,
                     amount: doc.amount,
                     categoryId: doc.categoryId,
                     description: doc.description,
@@ -35,6 +36,7 @@ exports.transactions_create = (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         amount: req.body.amount,
         budgetId: req.body.budgetId,
+        userId: req.body.userId,
         categoryId: req.body.categoryId,
         description: req.body.description,
         date: req.body.date,
@@ -47,6 +49,7 @@ exports.transactions_create = (req, res, next) => {
                 amount: result.amount,
                 categoryId: result.categoryId,
                 budgetId: result.budgetId,
+                userId: result.userId,
                 description: result.description,
                 date: result.date,
                 id: result._id,
@@ -66,7 +69,7 @@ exports.transactions_create = (req, res, next) => {
 
 exports.transactions_get_single = (req, res, next) => {
     Transaction.findById(req.params.id)
-        .select('categoryId amount date description budgetId _id')
+        .select('categoryId amount date description budgetId _id userId')
         .exec()
         .then(transaction => {
             if (!transaction){
@@ -78,6 +81,7 @@ exports.transactions_get_single = (req, res, next) => {
                 amount: transaction.amount,
                 categoryId: transaction.categoryId,
                 budgetId: transaction.budgetId,
+                userId: transaction.userId,
                 description: transaction.description,
                 date: transaction.date,
                 id: transaction._id,
@@ -108,6 +112,7 @@ exports.transactions_delete = (req, res, next) => {
                         amount : 'Number',
                         categoryId : 'Id',
                         budgetId : 'Id',
+                        userId : 'Id',
                         description : 'String',
                         date : 'String',
                     }

@@ -9,6 +9,7 @@ const transactionsSchema = new Schema({
     description: {type: String, required: true},
     budgetId: {type: mongoose.Schema.Types.ObjectId, ref: 'Budget', required: true},
     categoryId: {type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true},
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
 let Transaction;

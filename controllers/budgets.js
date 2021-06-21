@@ -5,7 +5,7 @@ const Transaction = require("../models/transaction");
 
 exports.budgets_get_all = (req, res, next) => {
     Budget.find()
-        .select('name totalAmount _id')
+        .select('name totalAmount _id userId')
         .exec()
         .then(docs => {
             const budgets = docs.map(doc => {
@@ -13,6 +13,7 @@ exports.budgets_get_all = (req, res, next) => {
                     id: doc._id,
                     name: doc.name,
                     totalAmount: doc.totalAmount,
+                    userId: doc.userId,
                     request:{
                         type: 'GET',
                         url: process.env.SERVER_URL+'budgets/'+doc._id
@@ -34,6 +35,7 @@ exports.budgets_create = (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         totalAmount: req.body.totalAmount,
+        userId: req.body.userId,
     });
     budget.save().then(result => {
         console.log(result)
@@ -43,6 +45,7 @@ exports.budgets_create = (req, res, next) => {
                 name: result.name,
                 totalAmount: result.totalAmount,
                 id: result._id,
+                userId: result.userId,
                 request: {
                     type: 'GET',
                     url: process.env.SERVER_URL+'budgets/'+ result._id,
@@ -59,7 +62,7 @@ exports.budgets_create = (req, res, next) => {
 
 exports.budgets_get_single = (req, res, next) => {
     Budget.findById(req.params.id)
-        .select('name totalAmount _id')
+        .select('name totalAmount _id userId')
         .exec()
         .then(budget => {
             if (!budget){
@@ -71,6 +74,7 @@ exports.budgets_get_single = (req, res, next) => {
                 name: budget.name,
                 totalAmount: budget.totalAmount,
                 id: budget._id,
+                userId: budget.userId,
                 request:{
                     type: 'GET',
                     url: process.env.SERVER_URL+'budgets/'
@@ -87,7 +91,7 @@ exports.budgets_get_single = (req, res, next) => {
 
 exports.budgets_get_single_with_budgetCategories = (req, res, next) => {
     Budget.findById(req.params.id)
-        .select('name totalAmount _id')
+        .select('name totalAmount _id userId')
         .populate('budgetCategories')
         .exec()
         .then(budget => {
@@ -104,6 +108,7 @@ exports.budgets_get_single_with_budgetCategories = (req, res, next) => {
                         name: budget.name,
                         totalAmount: budget.totalAmount,
                         id: budget._id,
+                        userId: budget.userId,
                         budgetCategories: budgetCategories.map(budgetCategory => {
                             return{
                                 categoryId: budgetCategory.categoryId,
@@ -135,7 +140,7 @@ exports.budgets_get_single_with_budgetCategories = (req, res, next) => {
 
 exports.budgets_get_single_with_transactions = (req, res, next) => {
     Budget.findById(req.params.id)
-        .select('name totalAmount _id')
+        .select('name totalAmount _id userId')
         .populate('transactions')
         .exec()
         .then(budget => {
@@ -152,6 +157,7 @@ exports.budgets_get_single_with_transactions = (req, res, next) => {
                         name: budget.name,
                         totalAmount: budget.totalAmount,
                         id: budget._id,
+                        userId: budget.userId,
                         transactions: transactions.map(transaction => {
                             return{
                                 amount: transaction.amount,
@@ -194,7 +200,8 @@ exports.budgets_delete = (req, res, next) => {
                     url: process.env.SERVER_URL+'budgets',
                     body: {
                         name : 'String',
-                        totalAmount: 'Number'
+                        totalAmount: 'Number',
+                        userId: 'ID'
                     }
                 }
             });

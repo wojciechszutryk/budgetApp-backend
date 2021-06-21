@@ -4,6 +4,7 @@ const categorySchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     parentCategory: {type: mongoose.Schema.Types.ObjectId, ref: 'ParentCategory', required: true},
     name: {type: String, required: true},
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
 let Category;

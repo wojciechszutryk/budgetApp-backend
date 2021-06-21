@@ -10,6 +10,7 @@ exports.parentCategories_get_all = (req, res, next) => {
                 return{
                     id: doc._id,
                     name: doc.name,
+                    userId: doc.userId,
                     request:{
                         type: 'GET',
                         url: process.env.SERVER_URL+'parentCategories/'+doc._id
@@ -30,6 +31,7 @@ exports.parentCategories_create = (req, res, next) => {
     const parentCategory = new ParentCategory({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
+        userId: req.body.userId,
     });
     parentCategory.save().then(result => {
         console.log(result)
@@ -38,6 +40,7 @@ exports.parentCategories_create = (req, res, next) => {
             createdParentCategory: {
                 name: result.name,
                 id: result._id,
+                userId: result.userId,
                 request: {
                     type: 'GET',
                     url: process.env.SERVER_URL+'parentCategories/'+ result._id,
@@ -65,6 +68,7 @@ exports.parentCategories_get_single = (req, res, next) => {
             res.status(200).json({
                 name: parentCategory.name,
                 id: parentCategory._id,
+                userId: parentCategory.userId,
                 request:{
                     type: 'GET',
                     url: process.env.SERVER_URL+'parentCategories/'
@@ -90,6 +94,7 @@ exports.parentCategories_delete = (req, res, next) => {
                     url: process.env.SERVER_URL+'parentCategories',
                     body: {
                         name : 'String',
+                        userId : 'Id',
                     }
                 }
             });

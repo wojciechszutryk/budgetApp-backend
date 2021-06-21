@@ -4,21 +4,12 @@ const checkAuth = require('../middleware/check-auth')
 
 const CategoriesController = require('../controllers/categories');
 
-// router.get('/', checkAuth, CategoriesController.categories_get_all);
-//
-// router.post('/', checkAuth, CategoriesController.categories_create);
-//
-// router.get(`/:id`, checkAuth, CategoriesController.categories_get_single);
-//
-// router.delete(`/:id`, checkAuth, CategoriesController.categories_delete);
+router.get('/', checkAuth, CategoriesController.categories_get_all);
 
-router.get('/',  CategoriesController.categories_get_all);
+router.post('/', CategoriesController.categories_create);
 
-router.post('/',  CategoriesController.categories_create);
+router.get(`/:id`, checkAuth, CategoriesController.categories_get_single);
 
-router.get(`/:id`,  CategoriesController.categories_get_single);
-
-router.delete(`/:id`,  CategoriesController.categories_delete);
-
+router.delete(`/:id`, checkAuth, CategoriesController.categories_delete);
 
 module.exports = router;

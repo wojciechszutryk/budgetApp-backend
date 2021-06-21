@@ -4,21 +4,12 @@ const checkAuth = require('../middleware/check-auth');
 
 const ParentCategoriesController = require('../controllers/parentCategories');
 
-// router.get('/', checkAuth, ParentCategoriesController.parentCategories_get_all);
-//
-// router.post('/', checkAuth, ParentCategoriesController.parentCategories_create);
-//
-// router.get(`/:id`, checkAuth, ParentCategoriesController.parentCategories_get_single);
-//
-// router.delete(`/:id`, checkAuth, ParentCategoriesController.parentCategories_delete);
+router.get('/', checkAuth, ParentCategoriesController.parentCategories_get_all);
 
-router.get('/',  ParentCategoriesController.parentCategories_get_all);
+router.post('/', ParentCategoriesController.parentCategories_create);
 
-router.post('/',  ParentCategoriesController.parentCategories_create);
+router.get(`/:id`, checkAuth, ParentCategoriesController.parentCategories_get_single);
 
-router.get(`/:id`,  ParentCategoriesController.parentCategories_get_single);
-
-router.delete(`/:id`,  ParentCategoriesController.parentCategories_delete);
-
+router.delete(`/:id`, checkAuth, ParentCategoriesController.parentCategories_delete);
 
 module.exports = router;

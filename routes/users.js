@@ -36,4 +36,16 @@ router.post('/login', UsersController.users_login);
 
 router.delete('/:id', checkAuth, UsersController.users_delete);
 
+router.put('/:id/changePhoto', checkAuth, upload.single('userImage'), UsersController.users_photo_change);
+
+router.get('/:id/getPhoto',  UsersController.users_get_userPhoto);
+
+router.get('/:id/getBudgets',  UsersController.users_budgets);
+
+router.get('/:id/getTransactions', UsersController.users_transactions);
+
+router.get('/:id/getCategories', UsersController.users_categories);
+
+router.get('/:id/getParentCategories',  UsersController.users_parentCategories);
+
 module.exports = router;
