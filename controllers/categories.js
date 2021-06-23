@@ -31,7 +31,7 @@ exports.categories_get_all = (req, res, next) => {
 }
 
 exports.categories_create = (req, res, next) => {
-    ParentCategory.findById(req.body.parentCategoryId)
+    ParentCategory.findById(req.body.parentCategory)
         .then(parentCategory => {
             if (!parentCategory){
                 return res.status(404).json({
@@ -41,25 +41,32 @@ exports.categories_create = (req, res, next) => {
             const category = new Category({
                 _id: mongoose.Types.ObjectId(),
                 name: req.body.name,
-                parentCategory: req.body.parentCategoryId,
+                parentCategory: req.body.parentCategory,
                 userId: req.body.userId,
             });
             return category.save()
-        }).then(result => {
-        res.status(201).json({
-            message: 'Category stored',
-            createdCategory: {
-                id: result._id,
-                parentCategoryId: result.parentCategory,
-                name: result.name,
-                userId: result.userId,
-                request:{
-                    type: 'GET',
-                    url: process.env.SERVER_URL+'categories/'+result._id
-                }
-            },
-        });
-    })
+                .then(result => {
+                    res.status(201).json({
+                        message: 'Category stored',
+                        createdCategory: {
+                            id: result._id,
+                            parentCategoryId: result.parentCategory,
+                            name: result.name,
+                            userId: result.userId,
+                            request:{
+                                type: 'GET',
+                                url: process.env.SERVER_URL+'categories/'+result._id
+                            }
+                        },
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        error: err,
+                    });
+                })
+        })
         .catch(err => {
             console.log(err);
             res.status(500).json({
