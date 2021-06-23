@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 const http = require('http');
-const port = process.env.SERVER_URL || 5000;
+const port = process.env.PORT || 5000;
 
 const usersRoutes = require('./routes/users')
 const parentCategoriesRoutes = require('./routes/parentCategories')
