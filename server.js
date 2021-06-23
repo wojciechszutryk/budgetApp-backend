@@ -15,7 +15,6 @@ const budgetsRoutes = require('./routes/budgets')
 const budgetCategoriesRoutes = require('./routes/budgetCategories')
 const transactionsRoutes = require('./routes/transactions')
 
-
 mongoose.connect('mongodb+srv://admin:'+process.env.MONGODB_PW+'@cluster0.ooyuy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
