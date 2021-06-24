@@ -6,7 +6,6 @@ const Transaction = require('../models/transaction');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
 
 exports.users_signup = (req, res) => {
     User.find({email: req.body.email})
@@ -28,7 +27,7 @@ exports.users_signup = (req, res) => {
                             email: req.body.email,
                             userName: req.body.userName,
                             password: hash,
-                            userImage: req.file.path,
+                            userImage: req.file.filename,
                         });
                         user
                             .save()
@@ -38,6 +37,7 @@ exports.users_signup = (req, res) => {
                                     email: result.email,
                                     id: result._id,
                                     userName: result.userName,
+                                    userImage: result.userImage,
                                     message: 'User created'
                                 })
                             })
@@ -96,65 +96,6 @@ exports.users_login = (req, res) => {
             res.status(500).json({error:err});
         });
 };
-
-exports.users_photo_change = (req, res) => {
-    const id = req.params.id;
-    User.find({_id: id})
-        .exec()
-        .then(user => {
-            if (user.length < 1) {
-                return res.status(401).json({
-                    message: 'No user found'
-                })
-            }
-            else{
-                try {
-                    fs.unlinkSync(user[0].userImage)
-                } catch(err) {
-                    console.error(err)
-                }
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({error:err});
-        });
-    const photo = req.file.path;
-    User.updateOne({_id: id}, {userImage: photo})
-        .exec()
-        .then(result => {
-            res.status(200).json({
-                message: 'Photo updated',
-            })
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({error:err});
-        });
-};
-
-exports.users_get_userPhoto = (req, res, next) => {
-    User.findById(req.params.id)
-        .select('userImage')
-        .exec()
-        .then(user => {
-            if (!user){
-                return res.status(404).json({
-                    message: 'user not found'
-                })
-            }
-            res.status(200).json({
-                userImage: user.userImage,
-                id: user._id,
-            });
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: err,
-            });
-        });
-}
 
 exports.users_delete =(req, res) =>{
     User.remove({_id: req.params.id})
@@ -264,3 +205,71 @@ exports.users_parentCategories = (req, res) => {
             res.status(500).json({error:err});
         });
 };
+
+
+// exports.users_photo_change = (req, res) => {
+//     const id = req.params.id;
+//     User.find({_id: id})
+//         .exec()
+//         .then(user => {
+//             if (user.length < 1) {
+//                 return res.status(401).json({
+//                     message: 'No user found'
+//                 })
+//             }
+//             else{
+//                 try {
+//                     gfs.remove({ _id: req.params.id, root: 'uploads' }, (err, gridStore) => {
+//                         if (err) {
+//                             return res.status(404).json({ err: err });
+//                         }
+//                     });
+//                 } catch(err) {
+//                     console.error(err)
+//                 }
+//             }
+//         })
+//         .catch(err => {
+//             console.log(err);
+//             res.status(500).json({error:err});
+//         });
+//     const photo = req.file.path;
+//     User.updateOne({_id: id}, {userImage: photo})
+//         .exec()
+//         .then(result => {
+//             res.status(200).json({
+//                 message: 'Photo updated',
+//             })
+//         })
+//         .catch(err => {
+//             console.log(err);
+//             res.status(500).json({error:err});
+//         });
+// };
+
+exports.users_get_userPhoto = (req, res, next) => {
+    User.findById(req.params.id)
+        .select('userImage')
+        .exec()
+        .then(user => {
+            if (!user){
+                return res.status(404).json({
+                    message: 'user not found'
+                })
+            }
+            gfs.files.findOne({ filename: user.userImage }, (err, file) => {
+                if (!file || file.length === 0) {
+                    return res.status(404).json({
+                        err: 'No file exists'
+                    });
+                }
+                return res.json(file);
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err,
+            });
+        });
+}
